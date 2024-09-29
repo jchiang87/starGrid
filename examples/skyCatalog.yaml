@@ -1,0 +1,15 @@
+catalog_dir: .
+catalog_name: skyCatalog
+object_types:
+  star_grid:
+    area_partition: None
+    module: star_grid
+    collection_class: StarGridCollection
+    num_stars: 1000
+    magnorm: 20.0
+    sed_path: /sdf/home/j/jchiang/dev/skyCatalogs/skycatalogs/data/sso/solar_sed_thin.txt
+    obj_id_offset: 0
+skycatalog_root: .
+provenance:
+  versioning:
+    schema_version: 1.2.0
