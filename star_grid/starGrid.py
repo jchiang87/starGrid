@@ -4,7 +4,11 @@ from skycatalogs.objects import BaseObject, ObjectCollection
 from skycatalogs.utils import normalize_sed
 
 
-__all__ = ["StarGridCollection", "StarGridObject"]
+__all__ = ["StarGridCollection", "StarGridObject", "register_objects"]
+
+
+def register_objects(sky_catalog):
+    StarGridCollection.register(sky_catalog)
 
 
 class StarGridObject(BaseObject):
