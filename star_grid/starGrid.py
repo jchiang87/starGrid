@@ -2,6 +2,7 @@ import numpy as np
 import galsim
 from skycatalogs.objects import BaseObject, ObjectCollection
 from skycatalogs.utils import normalize_sed
+from star_grid.utils import object_type_config
 
 
 __all__ = ["StarGridCollection", "StarGridObject"]
@@ -25,11 +26,11 @@ class StarGridCollection(ObjectCollection):
     Arrange stars in a grid in RA, Dec to cover the specified region
     of the sky.
     """
-    _object_type = "star_grid"
-    def __init__(self, region, sky_catalog, num_stars, sed_path, magnorm,
-                 obj_id_offset=0, **kwds):
+    def __init__(self, region, sky_catalog, object_type, num_stars, sed_path,
+                 magnorm, obj_id_offset=0):
         # Create a grid of stars that cover the region.
-        ra, dec = self._create_star_grid(region, num_stars)
+        self.num_stars = num_stars
+        ra, dec = self._create_star_grid(region)
 
         # Compute the SED that all StarGridObjects will use.
         lut = galsim.LookupTable.from_file(sed_path, interpolant='linear')
@@ -42,22 +43,22 @@ class StarGridCollection(ObjectCollection):
         self._dec = np.ravel(dec)
         self._id = [str(_) for _ in np.arange(len(self)) + obj_id_offset]
         self._sky_catalog = sky_catalog
-        self._object_type_unique = self._object_type
+        self._object_type_unique = object_type
         self._object_class = StarGridObject
         self._uniform_object_type = True
 
-    def _create_star_grid(self, region, num_stars):
+    def _create_star_grid(self, region):
         # Create a grid of stars covering the specified region.
         ra_min, ra_max, dec_min, dec_max = region.get_radec_bounds()
         ra0 = (ra_max + ra_min)/2.0
         dec0 = (dec_max + dec_min)/2.0
 
         # Set the number of grid points in ra and dec so that
-        # nra*ndec~num_stars and the spacings in ra and dec are
+        # nra*ndec ~ self.num_stars and the spacings in ra and dec are
         # approximately the same.
         ratio = np.cos(np.radians(dec0))
-        ndec = int(np.ceil(np.sqrt(num_stars/ratio)))
-        nra = int(np.ceil(np.sqrt(num_stars*ratio)))
+        ndec = int(np.ceil(np.sqrt(self.num_stars/ratio)))
+        nra = int(np.ceil(np.sqrt(self.num_stars*ratio)))
 
         # Compute the grid points.
         ra_vals = np.linspace(ra_min, ra_max, nra)
@@ -72,16 +73,28 @@ class StarGridCollection(ObjectCollection):
         return len(self._ra)
 
     @staticmethod
-    def register(sky_catalog):
-        sky_catalog.cat_cxt\
-                   .register_source_type(StarGridCollection._object_type,
-                                         object_class=StarGridObject,
-                                         collection_class=StarGridCollection,
-                                         custom_load=True)
+    def register(sky_catalog, object_type):
+        sky_catalog.cat_cxt.register_source_type(
+            object_type,
+            object_class=StarGridObject,
+            collection_class=StarGridCollection,
+            custom_load=True
+        )
 
     @staticmethod
-    def load_collection(region, sky_catalog, mjd=None, exposure=None):
+    def load_collection(region, sky_catalog, mjd=None, exposure=None, object_type=None):
         # Get catalog parameters from config file.
-        config = dict(sky_catalog.raw_config["object_types"]\
-                      [StarGridCollection._object_type])
-        return StarGridCollection(region, sky_catalog, **config)
+        config = object_type_config(sky_catalog, object_type)
+        num_stars = config['num_stars']
+        sed_path = config['sed_path']
+        magnorm = config['magnorm']
+        obj_id_offset = config.get('obj_id_offset', 0)
+        return StarGridCollection(
+            region,
+            sky_catalog,
+            object_type,
+            num_stars,
+            sed_path,
+            magnorm,
+            obj_id_offset=obj_id_offset
+        )

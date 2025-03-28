@@ -1,0 +1,34 @@
+modules:
+    - imsim
+
+template: imsim-config-skycat
+
+#input.sky_catalog.obj_types: [star_grid_100, star_grid_25]
+input.sky_catalog.obj_types: [star_grid_100]
+
+# Disable the atmospheric PSF to run faster for testing.
+input.atm_psf: ""
+psf:
+    type: Convolve
+    items:
+        -
+           type: Gaussian
+           fwhm: 0.8
+        -
+           type: Gaussian
+           fwhm: 0.3
+
+# Turn off check pointing for this example.
+input.checkpoint: ""
+
+input.sky_catalog.file_name: ./skyCatalog.yaml
+input.opsim_data.file_name: /sdf/home/j/jchiang/dev/imSim/tests/data/small_opsim_9683.db
+input.opsim_data.visit: 449053
+image.nobjects: 1000
+
+output.dir: output # default `fits`
+output.det_num.first: 94
+output.nproc: 1
+output.nfiles: 1
+
+image.random_seed: 42
