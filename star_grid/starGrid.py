@@ -31,7 +31,7 @@ class StarGridCollection(ObjectCollection):
     of the sky.
     """
     def __init__(self, region, sky_catalog, object_type, num_stars, sed_path,
-                 magnorm, obj_id_offset=0):
+                 magnorm):
         # Create a grid of stars that cover the region.
         self.num_stars = num_stars
         ra, dec = self._create_star_grid(region)
@@ -45,7 +45,7 @@ class StarGridCollection(ObjectCollection):
         # Fill the private attributes required by the base class.
         self._ra = np.ravel(ra)
         self._dec = np.ravel(dec)
-        self._id = [str(_) for _ in np.arange(len(self)) + obj_id_offset]
+        self._id = [f"{object_type}_{_}" for _ in np.arange(len(self))]
         self._sky_catalog = sky_catalog
         self._object_type_unique = object_type
         self._object_class = StarGridObject
@@ -92,13 +92,11 @@ class StarGridCollection(ObjectCollection):
         num_stars = config['num_stars']
         sed_path = config['sed_path']
         magnorm = config['magnorm']
-        obj_id_offset = config.get('obj_id_offset', 0)
         return StarGridCollection(
             region,
             sky_catalog,
             object_type,
             num_stars,
             sed_path,
-            magnorm,
-            obj_id_offset=obj_id_offset
+            magnorm
         )

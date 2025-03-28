@@ -8,7 +8,6 @@ object_types:
     num_stars: 100
     sed_path: /sdf/home/j/jchiang/dev/skyCatalogs/skycatalogs/data/sso/solar_sed_thin.txt
     magnorm: 20.0
-    obj_id_offset: 0
   star_grid_25:
     area_partition: None
     module: star_grid
@@ -16,7 +15,6 @@ object_types:
     num_stars: 25
     sed_path: /sdf/home/j/jchiang/dev/skyCatalogs/skycatalogs/data/sso/solar_sed_thin.txt
     magnorm: 20.0
-    obj_id_offset: 100
 skycatalog_root: .
 provenance:
   versioning:

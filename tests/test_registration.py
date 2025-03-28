@@ -39,7 +39,5 @@ class StarGridRegistrationTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
-#    unittest.main()
-    test_case = StarGridRegistrationTestCase()
-    test_case.test_skycatalog_yaml_loading()
+    unittest.main()
 
