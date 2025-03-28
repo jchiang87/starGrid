@@ -5,7 +5,11 @@ from skycatalogs.utils import normalize_sed
 from star_grid.utils import object_type_config
 
 
-__all__ = ["StarGridCollection", "StarGridObject"]
+__all__ = ["StarGridCollection", "StarGridObject", "register_objects"]
+
+
+def register_objects(sky_catalog):
+    StarGridCollection.register(sky_catalog)
 
 
 class StarGridObject(BaseObject):
