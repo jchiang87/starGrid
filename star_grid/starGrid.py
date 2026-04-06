@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import galsim
 from skycatalogs.objects import BaseObject, ObjectCollection
@@ -89,7 +90,7 @@ class StarGridCollection(ObjectCollection):
         # Get catalog parameters from config file.
         config = object_type_config(sky_catalog, object_type)
         num_stars = config['num_stars']
-        sed_path = config['sed_path']
+        sed_path = os.path.expandvars(config['sed_path'])
         magnorm = config['magnorm']
         radec_keys = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
         radec_bounds = (
