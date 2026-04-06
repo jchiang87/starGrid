@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import galsim
 from skycatalogs.objects import BaseObject, ObjectCollection
@@ -27,10 +28,10 @@ class StarGridCollection(ObjectCollection):
     of the sky.
     """
     def __init__(self, region, sky_catalog, object_type, num_stars, sed_path,
-                 magnorm):
+                 magnorm, radec_bounds=None):
         # Create a grid of stars that cover the region.
         self.num_stars = num_stars
-        ra, dec = self._create_star_grid(region)
+        ra, dec = self._create_star_grid(region, radec_bounds=radec_bounds)
 
         # Compute the SED that all StarGridObjects will use.
         lut = galsim.LookupTable.from_file(sed_path, interpolant='linear')
@@ -47,9 +48,12 @@ class StarGridCollection(ObjectCollection):
         self._object_class = StarGridObject
         self._uniform_object_type = True
 
-    def _create_star_grid(self, region):
+    def _create_star_grid(self, region, radec_bounds=None):
         # Create a grid of stars covering the specified region.
-        ra_min, ra_max, dec_min, dec_max = region.get_radec_bounds()
+        if radec_bounds is not None:
+            ra_min, ra_max, dec_min, dec_max = radec_bounds
+        else:
+            ra_min, ra_max, dec_min, dec_max = region.get_radec_bounds()
         ra0 = (ra_max + ra_min)/2.0
         dec0 = (dec_max + dec_min)/2.0
 
@@ -86,13 +90,20 @@ class StarGridCollection(ObjectCollection):
         # Get catalog parameters from config file.
         config = object_type_config(sky_catalog, object_type)
         num_stars = config['num_stars']
-        sed_path = config['sed_path']
+        sed_path = os.path.expandvars(config['sed_path'])
         magnorm = config['magnorm']
+        radec_keys = ('ra_min', 'ra_max', 'dec_min', 'dec_max')
+        radec_bounds = (
+            tuple(config[k] for k in radec_keys)
+            if all(k in config for k in radec_keys)
+            else None
+        )
         return StarGridCollection(
             region,
             sky_catalog,
             object_type,
             num_stars,
             sed_path,
-            magnorm
+            magnorm,
+            radec_bounds=radec_bounds
         )
