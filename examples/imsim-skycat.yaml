@@ -22,7 +22,7 @@ psf:
 input.checkpoint: ""
 
 input.sky_catalog.file_name: ./skyCatalog.yaml
-input.opsim_data.file_name: /sdf/home/j/jchiang/dev/imSim/tests/data/small_opsim_9683.db
+input.opsim_data.file_name: $os.environ.get('IMSIM_DIR') + '/tests/data/small_opsim_9683.db'
 input.opsim_data.visit: 449053
 image.nobjects: 1000
 
