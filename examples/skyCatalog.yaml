@@ -6,14 +6,14 @@ object_types:
     module: star_grid
     collection_class: StarGridCollection
     num_stars: 100
-    sed_path: $SKYCATALOGS_DIR/data/sso/solar_sed_thin.txt
+    sed_path: $SKYCATALOGS_DIR/skycatalogs/data/sso/solar_sed_thin.txt
     magnorm: 20.0
   star_grid_25:
     area_partition: None
     module: star_grid
     collection_class: StarGridCollection
     num_stars: 25
-    sed_path: $SKYCATALOGS_DIR/data/sso/solar_sed_thin.txt
+    sed_path: $SKYCATALOGS_DIR/skycatalogs/data/sso/solar_sed_thin.txt
     magnorm: 20.0
 skycatalog_root: .
 provenance:
